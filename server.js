@@ -3,13 +3,15 @@ var express = require('express'),
     router = express.Router(),
     mongoose = require('mongoose'),
     secrets = require('./config/secrets'),
+    User = require('./models/user'),
+    Task = require('./models/task'),
     bodyParser = require('body-parser');
 
 // Create our Express application
 var app = express();
 
 // Use environment defined port or 3000
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 4000;
 
 // Connect to a MongoDB
 mongoose.connect(secrets.mongo_connection, { useMongoClient: true});
