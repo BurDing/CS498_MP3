@@ -8,17 +8,17 @@ exports.list_all_Users = function(req, res) {
   if (qurl.search == '') {
     User.find({}, function(err, User) {
       if (err) {
-        res.status(500).send({
+        res.status(500).json({
           message: "Request for users failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).send({
+        res.status(200).json({
           message: "No user message in the MongoDB",
           data: []
         });
       } else {
-        res.status(200).send({
+        res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -34,17 +34,17 @@ exports.list_all_Users = function(req, res) {
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, User) {
       if (err) {
-        res.status(500).send({
+        res.status(500).json({
           message: "Request for a user failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).send({
+        res.status(404).json({
           message: "Can't find the user under your conditions",
           data: []
         });
       } else {
-        res.status(200).send({
+        res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -60,24 +60,24 @@ exports.create_a_User = function(req, res) {
     email: req.body.email
   }
   if (new_User.name == null) {
-    res.status(403).send({
+    res.status(403).json({
       message: "You can't create a user without a name",
       data: []
     });
   } else if (new_User.email == null) {
-    res.status(403).send({
+    res.status(403).json({
       message: "You can't create a user without a email",
       data: []
     });
   } else {
     User.create(new_User, function(err, User) {
       if (err) {
-        res.status(500).send({
+        res.status(500).json({
           message: "Request for creating a user failed",
           data: []
         });
       } else {
-        res.status(201).send({
+        res.status(201).json({
           message: 'OK',
           data: User
         })
@@ -89,17 +89,17 @@ exports.create_a_User = function(req, res) {
 exports.read_a_User = function(req, res) {
   User.findById(req.params.id, function(err, User) {
     if (err) {
-      res.status(500).send({
+      res.status(500).json({
         message: "Request for a user failed",
         data: []
       });
     } else if (User == null || User.length == 0) {
-      res.status(404).send({
+      res.status(404).json({
         message: "Can't find the user",
         data: []
       });
     } else {
-      res.status(200).send({
+      res.status(200).json({
         message: 'OK',
         data: User
       })
@@ -114,29 +114,29 @@ exports.update_a_User = function(req, res) {
     pendingTasks: req.body.pendingTasks
   }
   if (new_User.name == null) {
-    res.status(403).send({
+    res.status(403).json({
       message: "You can't update a user to no name",
       data: []
     });
   } else if (new_User.email == null) {
-    res.status(403).send({
+    res.status(403).json({
       message: "You can't update a user to no email",
       data: []
     });
   } else {
     User.findByIdAndUpdate(req.params.id, new_User, {new: true}, function(err, User) {
       if (err) {
-        res.status(500).send({
+        res.status(500).json({
           message: "Update request failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).send({
+        res.status(404).json({
           message: "Can't find the user",
           data: []
         });
       } else {
-        res.status(201).send({
+        res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -148,17 +148,17 @@ exports.update_a_User = function(req, res) {
 exports.delete_a_User = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, User) {
     if (err) {
-      res.status(500).send({
+      res.status(500).json({
         message: "Delete request failed",
         data: []
       });
     } else if (User == null || User.length == 0) {
-      res.status(404).send({
+      res.status(404).json({
         message: "Can't find the user",
         data: []
       });
     } else {
-      res.status(201).send({
+      res.status(200).json({
         message: 'successfully deleted',
         data: User
       })
@@ -167,7 +167,7 @@ exports.delete_a_User = function(req, res) {
 };
 
 exports.options_a_User = function(req, res){
-      res.status(200).send({
+      res.status(200).json({
         message: 'OK',
         data: {
           where: "filter results based on JSON query",
