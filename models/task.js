@@ -16,7 +16,7 @@ var TaskSchema = new mongoose.Schema({
       default: "unassigned"
     },
     dataCreated: {
-      type: Date,
+      type: String,
       default: Date.now
     }
 });
