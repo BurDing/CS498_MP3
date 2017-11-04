@@ -12,7 +12,7 @@ var UserSchema = new mongoose.Schema({
     },
     pendingTasks: Array,
     dataCreated: {
-      type: String,
+      type: Date,
       default: Date.now
     },
 });
