@@ -52,7 +52,12 @@ exports.list_all_Tasks = function(req, res) {
 exports.create_a_Task = function(req, res) {
   var new_Task = {
     name: req.body.name,
-    deadline: req.body.deadline
+    deadline: req.body.deadline,
+    description: req.body.description,
+    completed: req.body.completed,
+    assignedUser: req.body.assignedUser,
+    assignedUserName: req.body.assignedUserName,
+    dataCreated: req.body.dataCreated
   }
   if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
@@ -109,7 +114,8 @@ exports.update_a_Task = function(req, res) {
     description: req.body.description,
     completed: req.body.completed,
     assignedUser: req.body.assignedUser,
-    assignedUserName: req.body.assignedUserName
+    assignedUserName: req.body.assignedUserName,
+    dataCreated: req.body.dataCreated
   }
   if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({

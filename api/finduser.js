@@ -52,7 +52,9 @@ exports.list_all_Users = function(req, res) {
 exports.create_a_User = function(req, res) {
   var new_User = {
     name: req.body.name,
-    email: req.body.email
+    email: req.body.email,
+    pendingTasks: req.body.pendingTasks,
+    dataCreated: req.body.dataCreated
   }
   if (new_User.name == null || new_User.name == "") {
     res.status(403).json({
@@ -106,7 +108,8 @@ exports.update_a_User = function(req, res) {
   var new_User = {
     name: req.body.name,
     email: req.body.email,
-    pendingTasks: req.body.pendingTasks
+    pendingTasks: req.body.pendingTasks,
+    dataCreated: req.body.dataCreated
   }
   if (new_User.name == null || new_User.name == "") {
     res.status(403).json({
