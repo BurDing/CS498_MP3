@@ -12,11 +12,6 @@ exports.list_all_Users = function(req, res) {
           message: "Request for users failed",
           data: []
         });
-      } else if (User == null || User.length == 0) {
-        res.status(200).json({
-          message: "No user message in the MongoDB",
-          data: []
-        });
       } else {
         res.status(200).json({
           message: 'OK',
@@ -59,12 +54,12 @@ exports.create_a_User = function(req, res) {
     name: req.body.name,
     email: req.body.email
   }
-  if (new_User.name == null) {
+  if (new_User.name == null || new_User.name == "") {
     res.status(403).json({
       message: "You can't create a user without a name",
       data: []
     });
-  } else if (new_User.email == null) {
+  } else if (new_User.email == null || new_User.email == "") {
     res.status(403).json({
       message: "You can't create a user without a email",
       data: []
@@ -113,12 +108,12 @@ exports.update_a_User = function(req, res) {
     email: req.body.email,
     pendingTasks: req.body.pendingTasks
   }
-  if (new_User.name == null) {
+  if (new_User.name == null || new_User.name == "") {
     res.status(403).json({
       message: "You can't update a user to no name",
       data: []
     });
-  } else if (new_User.email == null) {
+  } else if (new_User.email == null || new_User.email == "") {
     res.status(403).json({
       message: "You can't update a user to no email",
       data: []

@@ -12,11 +12,6 @@ exports.list_all_Tasks = function(req, res) {
           message: "Request for tasks failed",
           data: []
         });
-      } else if (Task == null || Task.length == 0) {
-        res.status(200).json({
-          message: "No task message in the MongoDB",
-          data: []
-        });
       } else {
         res.status(200).json({
           message: 'OK',
@@ -59,12 +54,12 @@ exports.create_a_Task = function(req, res) {
     name: req.body.name,
     deadline: req.body.deadline
   }
-  if (new_Task.name == null) {
+  if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
       message: "You can't create a task without a name",
       data: []
     });
-  } else if (new_Task.deadline == null) {
+  } else if (new_Task.deadline == null || new_Task.deadline == "") {
     res.status(403).json({
       message: "You can't create a task without a deadline",
       data: []
@@ -116,12 +111,12 @@ exports.update_a_Task = function(req, res) {
     assignedUser: req.body.assignedUser,
     assignedUserName: req.body.assignedUserName
   }
-  if (new_Task.name == null) {
+  if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
       message: "You can't update a task to no name",
       data: []
     });
-  } else if (new_Task.deadline == null) {
+  } else if (new_Task.deadline == null || new_Task.deadline == "") {
     res.status(403).json({
       message: "You can't update a task to no deadline",
       data: []
