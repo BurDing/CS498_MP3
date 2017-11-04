@@ -54,7 +54,7 @@ exports.create_a_User = function(req, res) {
     name: req.body.name,
     email: req.body.email,
     pendingTasks: req.body.pendingTasks,
-    dataCreated: req.body.dataCreated
+    dateCreated: req.body.dateCreated
   }
   if (new_User.name == null || new_User.name == "") {
     res.status(403).json({
@@ -138,7 +138,7 @@ exports.update_a_User = function(req, res) {
     name: req.body.name,
     email: req.body.email,
     pendingTasks: req.body.pendingTasks,
-    dataCreated: req.body.dataCreated
+    dateCreated: req.body.dateCreated
   }
   if (new_User.name == null || new_User.name == "") {
     res.status(403).json({

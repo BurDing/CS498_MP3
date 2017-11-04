@@ -11,7 +11,7 @@ var UserSchema = new mongoose.Schema({
         required: true
     },
     pendingTasks: Array,
-    dataCreated: {
+    dateCreated: {
       type: Date,
       default: Date.now
     },

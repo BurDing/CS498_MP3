@@ -57,7 +57,7 @@ exports.create_a_Task = function(req, res) {
     completed: req.body.completed,
     assignedUser: req.body.assignedUser,
     assignedUserName: req.body.assignedUserName,
-    dataCreated: req.body.dataCreated
+    dateCreated: req.body.dateCreated
   }
   if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
@@ -144,7 +144,7 @@ exports.update_a_Task = function(req, res) {
     completed: req.body.completed,
     assignedUser: req.body.assignedUser,
     assignedUserName: req.body.assignedUserName,
-    dataCreated: req.body.dataCreated
+    dateCreated: req.body.dateCreated
   }
   if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
