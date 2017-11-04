@@ -10,10 +10,7 @@ var UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    pendingTasks: {
-      type: [String],
-      default: [""]
-    },
+    pendingTasks: [String],
     dateCreated: {
       type: Date,
       default: Date.now
