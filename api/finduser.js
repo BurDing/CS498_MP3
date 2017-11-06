@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-  User = mongoose.model('User');
+  User = mongoose.model('User'),
+  Task = mongoose.model('Task');
 var url = require('url');
 
 
@@ -163,6 +164,17 @@ exports.update_a_User = function(req, res) {
           data: []
         });
       } else {
+        var new_name = {
+          assignedUserName: req.body.name
+        }
+        Task.findOneAndUpdate({"assignedUser":req.params.id}, new_name, {new: true}, function(err, Task) {
+          if (err) {
+            res.status(500).json({
+              message: "Update request failed",
+              data: []
+            });
+          }
+        });
         res.status(200).json({
           message: 'OK',
           data: User
@@ -185,6 +197,18 @@ exports.delete_a_User = function(req, res) {
         data: []
       });
     } else {
+      var new_name = {
+        assignedUser: "",
+        assignedUserName: "unassigned"
+      }
+      Task.findOneAndUpdate({"assignedUser":req.params.id}, new_name, {new: true}, function(err, Task) {
+        if (err) {
+          res.status(500).json({
+            message: "Delete request failed",
+            data: []
+          });
+        }
+      });
       res.status(200).json({
         message: 'successfully deleted',
         data: User

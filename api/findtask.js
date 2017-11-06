@@ -1,5 +1,6 @@
 var mongoose = require('mongoose'),
-  Task = mongoose.model('Task');
+  Task = mongoose.model('Task'),
+  User = mongoose.model('User');
 var url = require('url');
 
 
