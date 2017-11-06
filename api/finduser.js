@@ -105,33 +105,34 @@ exports.read_a_User = function(req, res) {
         })
       }
     });
-  } else {
-    q = User.findById(req.params.id);
-    if (qurl.query.where) q = q.where(JSON.parse(qurl.query.where));
-    if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
-    if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
-    if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
-    if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
-    if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
-    q.exec(function(err, User) {
-      if (err) {
-        res.status(500).json({
-          message: "Request for a user failed",
-          data: []
-        });
-      } else if (User == null || User.length == 0) {
-        res.status(404).json({
-          message: "Can't find the user under your conditions",
-          data: []
-        });
-      } else {
-        res.status(200).json({
-          message: 'OK',
-          data: User
-        })
-      }
-    });
   }
+  // } else {
+  //   q = User.findById(req.params.id);
+  //   if (qurl.query.where) q = q.where(JSON.parse(qurl.query.where));
+  //   if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
+  //   if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
+  //   if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
+  //   if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
+  //   if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
+  //   q.exec(function(err, User) {
+  //     if (err) {
+  //       res.status(500).json({
+  //         message: "Request for a user failed",
+  //         data: []
+  //       });
+  //     } else if (User == null || User.length == 0) {
+  //       res.status(404).json({
+  //         message: "Can't find the user under your conditions",
+  //         data: []
+  //       });
+  //     } else {
+  //       res.status(200).json({
+  //         message: 'OK',
+  //         data: User
+  //       })
+  //     }
+  //   });
+  // }
 };
 
 exports.update_a_User = function(req, res) {
