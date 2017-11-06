@@ -180,11 +180,11 @@ exports.update_a_Task = function(req, res) {
 };
 
 exports.delete_a_Task = function(req, res) {
-  User.find({"pendingTasks":req.params.id}, function(err, user_p) {
-    res.json({
-      user_p
-    });
-  });
+  // User.find({"pendingTasks":req.params.id}, function(err, user_p) {
+  //   res.json({
+  //     user_p
+  //   });
+  // });
   Task.findByIdAndRemove(req.params.id, function(err, Task) {
     if (err) {
       res.status(500).json({
