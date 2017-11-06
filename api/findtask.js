@@ -8,7 +8,7 @@ exports.list_all_Tasks = function(req, res) {
   var qurl = url.parse(req.url, true);
   if (qurl.search == '') {
     limitT = Task.find();
-    limitT = limitT.q.limit(JSON.parse(100));
+    limitT = limitT.limit(JSON.parse(100));
     limitT.exec(function(err, Task) {
       if (err) {
         return res.status(500).json({
