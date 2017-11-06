@@ -7,7 +7,9 @@ var url = require('url');
 exports.list_all_Users = function(req, res) {
   var qurl = url.parse(req.url, true);
   if (qurl.search == '') {
-    User.find({}, function(err, User) {
+    limitU = User.find();
+    limitU = limitU.limit(JSON.parse(100));
+    limitU.exec(function(err, User) {
       if (err) {
         return res.status(500).json({
           message: "Request for users failed",
@@ -26,7 +28,11 @@ exports.list_all_Users = function(req, res) {
     if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
     if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
     if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
-    if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
+    if (qurl.query.limit) {
+      q = q.limit(JSON.parse(qurl.query.limit));
+    } else {
+      q = q.limit(JSON.parse(100));
+    }
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, User) {
       if (err) {
@@ -116,7 +122,11 @@ exports.read_a_User = function(req, res) {
     if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
     if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
     if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
-    if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
+    if (qurl.query.limit) {
+      q = q.limit(JSON.parse(qurl.query.limit));
+    } else {
+      q = q.limit(JSON.parse(100));
+    }
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, User) {
       if (err) {

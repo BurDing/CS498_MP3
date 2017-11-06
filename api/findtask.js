@@ -7,7 +7,9 @@ var url = require('url');
 exports.list_all_Tasks = function(req, res) {
   var qurl = url.parse(req.url, true);
   if (qurl.search == '') {
-    Task.find({}, function(err, Task) {
+    limitT = Task.find();
+    limitT = limitT.q.limit(JSON.parse(100));
+    limitT.exec(function(err, Task) {
       if (err) {
         return res.status(500).json({
           message: "Request for tasks failed",
@@ -26,7 +28,11 @@ exports.list_all_Tasks = function(req, res) {
     if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
     if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
     if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
-    if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
+    if (qurl.query.limit) {
+      q = q.limit(JSON.parse(qurl.query.limit));
+    } else {
+      q = q.limit(JSON.parse(100));
+    }
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, Task) {
       if (err) {
@@ -113,7 +119,11 @@ exports.read_a_Task = function(req, res) {
     if (qurl.query.sort) q = q.sort(JSON.parse(qurl.query.sort));
     if (qurl.query.select) q = q.select(JSON.parse(qurl.query.select));
     if (qurl.query.skip) q = q.skip(JSON.parse(qurl.query.skip));
-    if (qurl.query.limit) q = q.limit(JSON.parse(qurl.query.limit));
+    if (qurl.query.limit) {
+      q = q.limit(JSON.parse(qurl.query.limit));
+    } else {
+      q = q.limit(JSON.parse(100));
+    }
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, Task) {
       if (err) {
