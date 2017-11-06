@@ -9,12 +9,12 @@ exports.list_all_Users = function(req, res) {
   if (qurl.search == '') {
     User.find({}, function(err, User) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for users failed",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -30,17 +30,17 @@ exports.list_all_Users = function(req, res) {
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, User) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a user failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the user under your conditions",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -54,28 +54,33 @@ exports.create_a_User = function(req, res) {
   var new_User = {
     name: req.body.name,
     email: req.body.email,
-    pendingTasks: req.body.pendingTasks || [],
-    dateCreated: req.body.dateCreated
+    pendingTasks: req.body.pendingTasks || []
   }
   if (new_User.name == null || new_User.name == "") {
-    res.status(403).json({
+    return res.status(400).json({
       message: "You can't create a user without a name",
       data: []
     });
   } else if (new_User.email == null || new_User.email == "") {
-    res.status(403).json({
+    return res.status(400).json({
       message: "You can't create a user without a email",
       data: []
     });
   } else {
     User.create(new_User, function(err, User) {
       if (err) {
-        res.status(500).json({
+        if (err.code == 11000) {
+          return res.status(400).json({
+            message: "Eamil must be unique",
+            data: []
+          });
+        }
+        return res.status(500).json({
           message: "Request for creating a user failed",
           data: []
         });
       } else {
-        res.status(201).json({
+        return res.status(201).json({
           message: 'OK',
           data: User
         })
@@ -89,17 +94,17 @@ exports.read_a_User = function(req, res) {
   if (qurl.search == '') {
     User.findById(req.params.id, function(err, User) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a user failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the user",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -115,17 +120,17 @@ exports.read_a_User = function(req, res) {
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, User) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a user failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the user under your conditions",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: User
         })
@@ -135,49 +140,55 @@ exports.read_a_User = function(req, res) {
 };
 
 exports.update_a_User = function(req, res) {
-  var new_User = {
-    name: req.body.name,
-    email: req.body.email,
-    pendingTasks: req.body.pendingTasks || []
-  }
-  if (new_User.name == null || new_User.name == "") {
-    res.status(403).json({
+  if (req.body.name == null || req.body.name == "") {
+    return res.status(400).json({
       message: "You can't update a user to no name",
       data: []
     });
-  } else if (new_User.email == null || new_User.email == "") {
-    res.status(403).json({
+  } else if (req.body.email == null || req.body.email == "") {
+    return res.status(400).json({
       message: "You can't update a user to no email",
       data: []
     });
   } else {
-    User.findByIdAndUpdate(req.params.id, new_User, {new: true}, function(err, User) {
+    User.findById(req.params.id, function(err, User) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Update request failed",
           data: []
         });
       } else if (User == null || User.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the user",
           data: []
         });
       } else {
-        var new_name = {
-          assignedUserName: req.body.name
-        }
-        Task.findOneAndUpdate({"assignedUser":req.params.id}, new_name, {new: true}, function(err, Task) {
+        User.name = req.body.name || User.name;
+        User.email = req.body.email || User.email;
+        User.pendingTasks = req.body.pendingTasks || User.pendingTasks;
+        User.save(function(err) {
           if (err) {
-            res.status(500).json({
+            return res.status(500).json({
               message: "Update request failed",
               data: []
             });
           }
         });
-        res.status(200).json({
+        var new_name = {
+          assignedUserName: req.body.name
+        };
+        Task.findOneAndUpdate({"assignedUser":req.params.id}, new_name, {new: true}, function(err, Task) {
+          if (err) {
+            return res.status(500).json({
+              message: "Update request failed",
+              data: []
+            });
+          }
+        });
+        return res.status(200).json({
           message: 'OK',
           data: User
-        })
+        });
       }
     });
   }
@@ -186,12 +197,12 @@ exports.update_a_User = function(req, res) {
 exports.delete_a_User = function(req, res) {
   User.findByIdAndRemove(req.params.id, function(err, User) {
     if (err) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Delete request failed",
         data: []
       });
     } else if (User == null || User.length == 0) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Can't find the user",
         data: []
       });
@@ -202,13 +213,13 @@ exports.delete_a_User = function(req, res) {
       }
       Task.findOneAndUpdate({"assignedUser":req.params.id}, new_name, {new: true}, function(err, Task) {
         if (err) {
-          res.status(500).json({
+          return res.status(500).json({
             message: "Delete request failed",
             data: []
           });
         }
       });
-      res.status(200).json({
+      return res.status(200).json({
         message: 'successfully deleted',
         data: User
       })
@@ -217,7 +228,7 @@ exports.delete_a_User = function(req, res) {
 };
 
 exports.options_a_User = function(req, res){
-      res.status(200).json({
+      return res.status(200).json({
         message: 'OK',
         data: {
           where: "filter results based on JSON query",

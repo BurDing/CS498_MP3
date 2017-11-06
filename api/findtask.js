@@ -9,12 +9,12 @@ exports.list_all_Tasks = function(req, res) {
   if (qurl.search == '') {
     Task.find({}, function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for tasks failed",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: Task
         })
@@ -30,17 +30,17 @@ exports.list_all_Tasks = function(req, res) {
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a task failed",
           data: []
         });
       } else if (Task == null || Task.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the task under your conditions",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: Task
         })
@@ -54,31 +54,30 @@ exports.create_a_Task = function(req, res) {
   var new_Task = {
     name: req.body.name,
     deadline: req.body.deadline,
-    description: req.body.description,
-    completed: req.body.completed,
-    assignedUser: req.body.assignedUser,
-    assignedUserName: req.body.assignedUserName,
-    dateCreated: req.body.dateCreated
+    description: req.body.description || "",
+    completed: req.body.completed || false,
+    assignedUser: req.body.assignedUser || "",
+    assignedUserName: req.body.assignedUserName || "unassigned"
   }
   if (new_Task.name == null || new_Task.name == "") {
-    res.status(403).json({
+    return res.status(400).json({
       message: "You can't create a task without a name",
       data: []
     });
   } else if (new_Task.deadline == null || new_Task.deadline == "") {
-    res.status(403).json({
+    return res.status(400).json({
       message: "You can't create a task without a deadline",
       data: []
     });
   } else {
     Task.create(new_Task, function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for creating a task failed",
           data: []
         });
       } else {
-        res.status(201).json({
+        return res.status(201).json({
           message: 'OK',
           data: Task
         })
@@ -92,17 +91,17 @@ exports.read_a_Task = function(req, res) {
   if (qurl.search == '') {
     Task.findById(req.params.id, function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a task failed",
           data: []
         });
       } else if (Task == null || Task.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the task",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: Task
         })
@@ -118,17 +117,17 @@ exports.read_a_Task = function(req, res) {
     if (qurl.query.count) q = q.count(JSON.parse(qurl.query.count));
     q.exec(function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Request for a task failed",
           data: []
         });
       } else if (Task == null || Task.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the task under your conditions",
           data: []
         });
       } else {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'OK',
           data: Task
         })
@@ -138,38 +137,44 @@ exports.read_a_Task = function(req, res) {
 };
 
 exports.update_a_Task = function(req, res) {
-  var new_Task = {
-    name: req.body.name,
-    deadline: req.body.deadline,
-    description: req.body.description,
-    completed: req.body.completed,
-    assignedUser: req.body.assignedUser,
-    assignedUserName: req.body.assignedUserName
-  }
-  if (new_Task.name == null || new_Task.name == "") {
-    res.status(403).json({
+  if (req.body.name == null || req.body.name == "") {
+    return res.status(400).json({
       message: "You can't update a task to no name",
       data: []
     });
-  } else if (new_Task.deadline == null || new_Task.deadline == "") {
-    res.status(403).json({
+  } else if (req.body.deadline == null || req.body.deadline == "") {
+    return res.status(400).json({
       message: "You can't update a task to no deadline",
       data: []
     });
   } else {
-    Task.findByIdAndUpdate(req.params.id, new_Task, {new: true}, function(err, Task) {
+    Task.findById(req.params.id, function(err, Task) {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           message: "Update request failed",
           data: []
         });
       } else if (Task == null || Task.length == 0) {
-        res.status(404).json({
+        return res.status(404).json({
           message: "Can't find the task",
           data: []
         });
       } else {
-        res.status(200).json({
+        Task.name = req.body.name || Task.name;
+        Task.deadline = req.body.deadline || Task.deadline;
+        Task.description = req.body.description || Task.description;
+        Task.completed = req.body.completed || Task.completed;
+        Task.assignedUser = req.body.assignedUser || Task.assignedUser;
+        Task.assignedUserName = req.body.assignedUserName || Task.assignedUserName;
+        Task.save(function(err) {
+          if (err) {
+            return res.status(500).json({
+              message: "Update request failed",
+              data: []
+            });
+          }
+        });
+        return res.status(200).json({
           message: 'OK',
           data: Task
         })
@@ -186,17 +191,17 @@ exports.delete_a_Task = function(req, res) {
   // });
   Task.findByIdAndRemove(req.params.id, function(err, Task) {
     if (err) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Delete request failed",
         data: []
       });
     } else if (Task == null || Task.length == 0) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Can't find the task",
         data: []
       });
     } else {
-      res.status(200).json({
+      return res.status(200).json({
         message: 'successfully deleted',
         data: Task
       })
@@ -205,7 +210,7 @@ exports.delete_a_Task = function(req, res) {
 };
 
 exports.options_a_Task = function(req, res){
-      res.status(200).json({
+      return res.status(200).json({
         message: 'OK',
         data: {
           where: "filter results based on JSON query",
