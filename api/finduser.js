@@ -126,7 +126,8 @@ exports.read_a_User = function(req, res) {
         });
       } else {
         res.status(200).json({
-          User
+          message: 'OK',
+          data: User
         })
       }
     });
