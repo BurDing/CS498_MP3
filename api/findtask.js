@@ -144,8 +144,7 @@ exports.update_a_Task = function(req, res) {
     description: req.body.description,
     completed: req.body.completed,
     assignedUser: req.body.assignedUser,
-    assignedUserName: req.body.assignedUserName,
-    dateCreated: req.body.dateCreated
+    assignedUserName: req.body.assignedUserName
   }
   if (new_Task.name == null || new_Task.name == "") {
     res.status(403).json({
